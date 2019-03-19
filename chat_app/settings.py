@@ -22,7 +22,8 @@ SECRET_KEY = config(
     'SECRET_KEY',
     default='o8*sh__j&qi&%iay0j0@ybo6@%_c(1quk8(9&r-#*o!)ku_ly^'
 )
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/

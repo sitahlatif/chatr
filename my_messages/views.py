@@ -4,12 +4,14 @@ from .serializers import (
     UserCreateSerializer,
     UserLoginSerializer,
     ChannelSerializer,
+    JoindChannelSerializer
 )
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 from .models import Message, Channel
+from django.contrib.auth.models import User
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -67,6 +69,28 @@ class MessageCreateView(APIView):
             Message.objects.create(**new_data)
             return Response(valid_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+#1 Fetch the channel (using it's ID)
+#2 data is going to a user
+#3 take the data, and add it to the channel members
+#4 return a response
+
+
+class JoindChannelView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+# def put(self, request, channel_id):
+    
+
+    def put(self, request, channel_id):
+        channel=Channel.objects.get(id=channel_id)
+        channel.members.add(User.objects.get(id=request.user.id))
+        channel.save()
+        return Response(ChannelSerializer(channel).data, status=HTTP_200_OK)
+
+
+
 
 
 class MessageListView(APIView):
