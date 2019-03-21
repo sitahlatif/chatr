@@ -1,19 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from datetime import date
 
 class Channel(models.Model):
     name = models.CharField(unique=True, max_length=120)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     image_url = models.URLField(null=True, blank=True)
-    date= models.DateTimeField(auto_now_add=True)
+    channel_date = models.DateField(default=date.today)
     members = models.ManyToManyField(User, blank=True, related_name='members')
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['date']
+        ordering = ['channel_date']
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

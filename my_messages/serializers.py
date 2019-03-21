@@ -49,10 +49,12 @@ class MessageListSerializer(serializers.ModelSerializer):
 
 class ChannelSerializer(serializers.ModelSerializer):
     # members=  UserSerializer()
+    member_count = serializers.SerializerMethodField()
     class Meta:
         model = Channel
-        fields = ['name', 'id', 'image_url','members']
-
+        fields = ['name', 'id', 'image_url','members','channel_date', 'member_count']
+    def get_member_count(self, obj):
+        return obj.members.count()
 
 class MessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
