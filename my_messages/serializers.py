@@ -38,13 +38,13 @@ class UserLoginSerializer(serializers.Serializer):
 
 class MessageListSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
-
     class Meta:
         model = Message
         exclude = ['user']
-
     def get_username(self, obj):
         return obj.user.username
+
+
 
 
 class ChannelSerializer(serializers.ModelSerializer):
@@ -55,6 +55,8 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = ['name', 'id', 'image_url','members','channel_date', 'member_count']
     def get_member_count(self, obj):
         return obj.members.count()
+    # def get_username(self, obj):
+    #     return obj.members.username
 
 class MessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -69,9 +71,12 @@ class MessageCreateSerializer(serializers.ModelSerializer):
 #...........................New Serializer...............
 
 class JoindChannelSerializer(serializers.ModelSerializer):
+    # username = serializers.SerializerMethodField()
     class Meta:
         model = Channel
         fields = ['members']
+    # def get_username(self, obj):
+    #     return obj.user.username
 
 
 
