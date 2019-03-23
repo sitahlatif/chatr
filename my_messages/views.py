@@ -4,7 +4,8 @@ from .serializers import (
     UserCreateSerializer,
     UserLoginSerializer,
     ChannelSerializer,
-    JoindChannelSerializer
+    UserSerializer
+
 )
 from rest_framework import status
 from rest_framework.views import APIView
@@ -52,6 +53,10 @@ class ChannelListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated, ]
 
 
+
+
+
+
 class MessageCreateView(APIView):
     serializer_class = MessageCreateSerializer
     permission_classes = [IsAuthenticated, ]
@@ -71,23 +76,34 @@ class MessageCreateView(APIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-#1 Fetch the channel (using it's ID)
-#2 data is going to a user
-#3 take the data, and add it to the channel members
-#4 return a response
+
+class UserListAPIView(ListAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
 
 
 class JoindChannelView(APIView):
     permission_classes = [IsAuthenticated, ]
-
-# def put(self, request, channel_id):
-    
 
     def put(self, request, channel_id):
         channel=Channel.objects.get(id=channel_id)
         channel.members.add(User.objects.get(id=request.user.id))
         channel.save()
         return Response(ChannelSerializer(channel).data, status=HTTP_200_OK)
+
+
+
+class UnJoindChannelView(APIView):
+    permission_classes = [IsAuthenticated, ]
+
+    def put(self, request, channel_id):
+        channel=Channel.objects.get(id=channel_id)
+        channel.members.remove(User.objects.get(id=request.user.id))
+        channel.save()
+        return Response(ChannelSerializer(channel).data, status=HTTP_200_OK)
+
 
 
 

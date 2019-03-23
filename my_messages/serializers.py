@@ -55,28 +55,15 @@ class ChannelSerializer(serializers.ModelSerializer):
         fields = ['name', 'id', 'image_url','members','channel_date', 'member_count']
     def get_member_count(self, obj):
         return obj.members.count()
-    # def get_username(self, obj):
-    #     return obj.members.username
+    # def get_members(self, obj):
+    #   return obj.members.username
 
 class MessageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['message']
-        # fields = '__all__'
 
-#AddMemberSerializer
-#model = ??
-#fields = ??
 
-#...........................New Serializer...............
-
-class JoindChannelSerializer(serializers.ModelSerializer):
-    # username = serializers.SerializerMethodField()
-    class Meta:
-        model = Channel
-        fields = ['members']
-    # def get_username(self, obj):
-    #     return obj.user.username
 
 
 
