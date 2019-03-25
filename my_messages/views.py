@@ -22,7 +22,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from django.http import HttpResponse
 
-
+# this view is for the UserLogin
 class UserLoginAPIView(APIView):
     serializer_class = UserLoginSerializer
 
@@ -34,11 +34,11 @@ class UserLoginAPIView(APIView):
             return Response(valid_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-
+#this view for user create 
 class UserCreateAPIView(CreateAPIView):
     serializer_class = UserCreateSerializer
 
-
+#this view for channel create
 class ChannelCreateAPIView(CreateAPIView):
     serializer_class = ChannelSerializer
     permission_classes = [IsAuthenticated, ]
@@ -46,17 +46,13 @@ class ChannelCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
+#this view for channel list
 class ChannelListAPIView(ListAPIView):
     serializer_class = ChannelSerializer
     queryset = Channel.objects.all()
     permission_classes = [IsAuthenticated, ]
 
-
-
-
-
-
+#this view for creating message in the chatr
 class MessageCreateView(APIView):
     serializer_class = MessageCreateSerializer
     permission_classes = [IsAuthenticated, ]
@@ -67,55 +63,63 @@ class MessageCreateView(APIView):
         if serializer.is_valid():
             valid_data = serializer.data
             new_data = {
-                'message': valid_data['message'],
-                'user': request.user,
-                'channel': Channel.objects.get(id=channel_id)
+                'message': valid_data['message'],# get the message written
+                'user': request.user,# get the user 
+                'channel': Channel.objects.get(id=channel_id)#get the channel id
             }
             Message.objects.create(**new_data)
             return Response(valid_data, status=HTTP_200_OK)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-
+#this view for the user list
 class UserListAPIView(ListAPIView):
     serializer_class = UserSerializer
+    #this line is to get the all objects of user 
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, ]
 
 
-
+#this view for joining channel  
 class JoindChannelView(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def put(self, request, channel_id):
+        #this line to get the channel id 
         channel=Channel.objects.get(id=channel_id)
+        #this line is to add user to the members of channel
         channel.members.add(User.objects.get(id=request.user.id))
+        #to save the channel
         channel.save()
         return Response(ChannelSerializer(channel).data, status=HTTP_200_OK)
 
 
-
+#this view for unjoind channel
 class UnJoindChannelView(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def put(self, request, channel_id):
+        #this line to get the channel id 
         channel=Channel.objects.get(id=channel_id)
+
+        #this line to remove the user from members of the channel 
         channel.members.remove(User.objects.get(id=request.user.id))
+
+        #this line to save the channel 
         channel.save()
         return Response(ChannelSerializer(channel).data, status=HTTP_200_OK)
 
 
-
-
-
-
+# this view for displaying message list 
 class MessageListView(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request, channel_id):
         messages = Message.objects.filter(
             channel=Channel.objects.get(id=channel_id))
+        # to get the latest message 
         latest = request.GET.get('latest')
+        #filter the message which is greater than the latest message
         if latest:
             messages = messages.filter(timestamp__gt=latest)
 

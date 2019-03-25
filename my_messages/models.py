@@ -27,8 +27,3 @@ class Message(models.Model):
     class Meta:
         ordering = ['timestamp']
 
-# class JoindChannel(models.Model):
-
-#      members=models.ForeignKey(User, on_delete=models.CASCADE)
-#      channel= models.ForeignKey(Channel, on_delete=models.CASCADE)
-#       joind=models.BooleanField(default=False)
